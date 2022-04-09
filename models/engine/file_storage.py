@@ -23,7 +23,7 @@ class FileStorage:
         """Adds new object to storage dictionary"""
         self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
 
-    def delete(self, obj):
+    def delete(self, obj=None):
         """
         delete obj from __objects if it’s inside - if obj is equal to None,
         the method should not do anything
