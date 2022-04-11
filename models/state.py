@@ -11,20 +11,18 @@ from os import getenv
 
 class State(BaseModel, Base):
     """ State class """
+    __tablename__ = 'states'
+    name = Column(String(128), nullable=False)
     if getenv('HBNB_TYPE_STORAGE') == 'db':
-        __tablename__ = 'states'
-        name = Column(String(128), nullable=False)
-        cities = relationship("City", backref="state", cascade="all, delete")
+        cities = relationship("City", backref="state", cascade='delete')
     else:
-        name = ''
-
         @property
         def cities(self):
             '''
-            Getter attribute
+            Getter
             '''
             cities_in_state = []
             for city in models.storage.all(City).values():
-                if city.state_id == self.id:
+                if self.id == city.state_id:
                     cities_in_state.append(city)
             return cities_in_state
