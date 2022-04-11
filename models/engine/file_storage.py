@@ -1,6 +1,13 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
 import json
+from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.city import City
+from models.amenity import Amenity
+from models.state import State
+from models.review import Review
 
 
 class FileStorage:
@@ -11,13 +18,14 @@ class FileStorage:
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage, if a class
         is specified, it returns of objects of said class"""
-        if cls is None:
+        if (cls is None):
             return FileStorage.__objects
-        dir_same_cls = {}
-        for key, value in FileStorage.__objects.items():
-            if value.__class__ == cls:
-                dir_same_cls[key] = value
-        return dir_same_cls
+        else:
+            dir_same_cls = {}
+            for key, value in FileStorage.__objects.items():
+                if value.__class__ == cls:
+                    dir_same_cls[key] = value
+            return dir_same_cls
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -34,23 +42,14 @@ class FileStorage:
 
     def delete(self, obj=None):
         """Deletes object from storage"""
-        if obj is None:
+        if (obj is None):
             return
-
         key = obj.to_dict()['__class__'] + '.' + obj.id
         if key in FileStorage.__objects:
             del FileStorage.__objects[key]
 
     def reload(self):
         """Loads storage dictionary from file"""
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.place import Place
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.review import Review
-
         classes = {
             'BaseModel': BaseModel, 'User': User, 'Place': Place,
             'State': State, 'City': City, 'Amenity': Amenity,
