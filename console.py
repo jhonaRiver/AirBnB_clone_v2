@@ -122,7 +122,7 @@ class HBNBCommand(cmd.Cmd):
             return
         elif class_name in HBNBCommand.classes:
             new_instance = eval(class_name)()
-            if len(args) > 1:
+            if len(arg_list) > 1:
                 for elements in arg_list[1:]:
                     attr_name, val = elements.split("=")
                     if val == '':
@@ -215,21 +215,19 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
-        print_list = []
-
-        if args:
-            args = args.split(' ')[0]  # remove possible trailing args
-            if args not in HBNBCommand.classes:
-                print("** class doesn't exist **")
-                return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
+        all_objs = storage.all()
+        if len(args) == 0:
+            for obj_id in all_objs.keys():
+                obj = all_objs[obj_id]
+                print(obj)
         else:
-            for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
-
-        print(print_list)
+            if args not in self.classes.keys():
+                print("** class doesn't exist **")
+            else:
+                leng = len(args)
+                for key, val in all_objs.items():
+                    if key[0:leng] == args:
+                        print(val)
 
     def help_all(self):
         """ Help information for the all command """
