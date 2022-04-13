@@ -14,17 +14,18 @@ from models.place import Place
 from models.amenity import Amenity
 from models.review import Review
 
+classes = {
+        'BaseModel': BaseModel,
+        'User': User, 'Place': Place,
+        'State': State, 'City': City,
+        'Amenity': Amenity, 'Review': Review
+        }
+
 
 class DBStorage:
     """" db storage class """
     __engine = None
     __session = None
-    classes = {
-            'BaseModel': BaseModel,
-            'User': User, 'Place': Place,
-            'State': State, 'City': City,
-            'Amenity': Amenity, 'Review': Review
-    }
 
     def __init__(self):
         """Engine constructor"""
@@ -42,18 +43,15 @@ class DBStorage:
     def all(self, cls=None):
         """Returns query on current database"""
         a_dict = {}
-        if cls:
-            query = self.__session.query(cls).all()
-            for obj in query:
-                a_dict[str(cls) + "." + obj.id] = obj
-        else:
-            for key,value in self.classes.items():
-                try:
-                    query = self.__session.query(value).all()
-                except:
-                    pass
-                for obj in query:
-                    a_dict[key + "." + obj.id] = obj
+        if cls is None:
+            for value in classes.values():
+                for o in self.__session.query(value):
+                    k = o.__class__.__name__ + '.' + o.id
+                    a_dict[k] = o
+        if cls in classes:
+            for o in self.__session.query(classes[cls]):
+                k = o.__class__.__name__ + '.' + o.id
+                a_dict[k] = o
         return a_dict
 
     def new(self, obj):
