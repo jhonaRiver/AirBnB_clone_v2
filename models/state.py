@@ -11,11 +11,13 @@ from os import getenv
 
 class State(BaseModel, Base):
     """ State class """
-    __tablename__ = 'states'
-    name = Column(String(128), nullable=False)
+    __tablename__ = "states"
     if getenv('HBNB_TYPE_STORAGE') == 'db':
-        cities = relationship("City", backref="state", cascade='delete')
+        name = Column(String(128), nullable=False)
+        cities = relationship("City", backref="state", cascade="all, delete")
     else:
+        name = ""
+
         @property
         def cities(self):
             '''
@@ -23,6 +25,6 @@ class State(BaseModel, Base):
             '''
             cities_in_state = []
             for city in models.storage.all(City).values():
-                if self.id == city.state_id:
+                if city.state_id == self.id:
                     cities_in_state.append(city)
             return cities_in_state
