@@ -22,7 +22,6 @@ class Place(BaseModel, Base):
         longitude = Column(Float, nullable=True)
         reviews = relationship("Review", backref="place",
                                cascade="all, delete")
-
     else:
         city_id = ""
         user_id = ""
